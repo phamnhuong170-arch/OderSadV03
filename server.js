@@ -173,12 +173,16 @@ Nguoi choi ky cuu cho rang nhung thay doi lam mat tinh skill-intensive. Nguoi mo
     },
   ];
 
-  const seedAll = db.transaction(() => {
+db.exec('BEGIN');
+  try {
     for (const s of seeds) {
       ins.run(s.title, s.excerpt, s.content, s.image_url, s.category, s.author, s.views, s.h);
     }
-  });
-  seedAll();
+    db.exec('COMMIT');
+  } catch(e) {
+    db.exec('ROLLBACK');
+    throw e;
+    }
   console.log('[DB] Seed OK —', seeds.length, 'bai viet');
 }
 
